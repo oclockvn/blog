@@ -1,0 +1,74 @@
+<p>Entity Framework Navigation Property. Lazy loading và Eager loading (load trì hoãn và load đồng thời)</p>
+<p>Biết được cơ chế hoạt động của 2 cái này có thể giúp bạn gia tăng performance cho Entity Framework (EF) rất nhiều trong các dự án của mình.</p>
+<p>Trong phạm vi bài viết mình sử dụng EF code-first. Các cách còn lại hoàn toàn tương tự nhé.</p>
+<h3 id="entity">Entity</h3>
+<p>Xét 1 database context có 2 entity sau:</p>
+<script src="https://gist.github.com/oclockvn/730964da767b7be0a164cd0023ecbc2e.js"></script>
+
+<p>Ok, đơn giản phải không!</p>
+<h3 id="navigation-property">Navigation Property</h3>
+<p>Khóa ngoại là cái biểu thị cho mối quan hệ trong CSDL quan hệ. Đơn giản thôi, 1 category sẽ có nhiều product - 1 product thuộc 1 category (để cho vấn đề đơn giản thôi nhé, bạn muốn product thuộc nhiều category cũng chả sao). Quan hệ 1 - * (1 - nhiều) là cái rất phổ biến.</p>
+<p>Trong EF, cái đại diện cho mối quan hệ là Navigation Property. Nó được biểu diễn bằng cách thêm các properties như sau:</p>
+<script src="https://gist.github.com/oclockvn/9b66de54a560c4cd203aba1c188f33c8.js"></script>
+
+<p>ở <code>Product</code> mình thêm 2 property, bạn cũng có thể hình dung ngay là product sẽ có <code>CategoryId</code> là khóa ngoại (foreign key = FK), và <code>Category</code> là Navigation Property.</p>
+<blockquote>
+<p>Để đơn giản, bạn hãy đặt tên theo quy ước <code>&lt;Table&gt; + Id</code>, với <code>&lt;Table&gt;</code> là tên class tham chiếu tới. Bạn cũng có thể đặt tên tùy thích bằng cách sử dụng kết hợp với attribute <code>[ForeignKey]</code></p>
+</blockquote>
+<p>Tương tự ở class <code>Category</code> mình thêm 1 collection các product. Đây là danh sách các product thuộc category này.</p>
+<p>Cách khai báo Navigation Property cũng rất quan trọng, nó quyết định bạn có sử dụng được chức năng lazy loading hay không (*).</p>
+<h3 id="dbcontext">DbContext</h3>
+<p>Xem snippet:</p>
+<script src="https://gist.github.com/oclockvn/b50aae17885ad1d6ecc7f9e238e1f8fd.js"></script>
+
+<blockquote>
+<p>Nhớ thêm 1 connection string có <code>name=&quot;connection&quot;</code> vào config nhé.</p>
+</blockquote>
+<p>Mình thêm dữ liệu để test vào DbContext như sau:</p>
+<script src="https://gist.github.com/oclockvn/70f706b2e27adffffd1a353ca1fd8ccb.js"></script>
+
+<p>Chú ý:</p>
+<ol>
+<li><p>Mình không set <code>CategoryId</code> cho product khi thêm mới. Và để làm được điều này, hãy quay lại entity mà xem, <code>CategoryId</code> được khai báo là <code>nullable</code>.</p>
+</li>
+<li><p>Dòng 11, thực hiện save để product được thêm vào db, từ đó sinh ra id (vì id là kiểu tự động tăng - đây là quy ước của EF, nếu bạn đặt property là Id hoặc EntityId và có kiểu là int thì nó sẽ là khóa chính tự động tăng).</p>
+</li>
+<li><p>Dòng 13, thêm 2 product này vào category và save. Điều này cũng đồng thời set khóa ngoại của 2 product (<code>CategoryId</code>) là category hiện tại.</p>
+</li>
+</ol>
+<h3 id="eager-loading">Eager Loading</h3>
+<p>Đừng cố gắng dịch từ này ra tiếng Việt, tuy nhiên nếu bạn muốn thì mình có thể tạm dịch Eager Loading là load (tải) <strong>đồng thời</strong>. Tại sao lại là đồng thời, hãy xem giải thích.</p>
+<p><img src="load-product.png" alt="load product"></p>
+<p>đặt breakpoint tại dòng 68 và lấy danh sách product từ db. Hãy chú ý tới Navigation Property <code>Category</code> hiện tại đang là null dù cho <code>CategoryId == 2</code>;</p>
+<p>Để sử dụng eager loading, bạn dùng với phương thức <code>Include</code> như ở dòng tiếp theo. <code>F10</code>.</p>
+<p><img src="eager-loading-product.png" alt="eager loading product"></p>
+<p>Để biết chuyện gì xảy ra thì bạn ghi log ra</p>
+<script src="https://gist.github.com/oclockvn/9b48204e96c96d50da5c5cd7c87edc37.js"></script>
+
+<p>Và xem log:</p>
+<script src="https://gist.github.com/oclockvn/e635b0088841aea8270959970b4f8792.js"></script>
+
+<p>Chỉ là 1 câu select bình thường.</p>
+<p>Chạy tới câu <code>Include()</code>:</p>
+<script src="https://gist.github.com/oclockvn/6816ef6d6e4abd5bb9bb54c9715b34b3.js"></script>
+
+<p>Yes, join 2 table dựa trên khóa ngoại là <code>CategoryId</code>.</p>
+<p>Đây là lý do mình gọi eager loading là load đồng thời. Các entity <strong>liên quan</strong> sẽ (được) load đồng thời với entity được query nếu sử dụng <code>Include()</code> - và quan trọng nhất là <strong>chỉ load 1 lần duy nhất</strong>.</p>
+<h3 id="lazy-loading">Lazy Loading</h3>
+<p>Như ở (*) đã nói, cách bạn khai báo property quyết định xem bạn có sử dụng được chức năng lazy loading hay không. Nếu muốn, hãy quay lại entity và sửa như sau:</p>
+<script src="https://gist.github.com/oclockvn/407619297d31b95415e834a23d8d3cc6.js"></script>
+
+<p>Không có gì thay đổi ngoại trừ việc mình thêm keyword <code>virtual</code> vào 2 Navigation Property. Điều này sẽ giúp bạn sử dụng lazy loading vốn đã được default enable trong EF.</p>
+<p>Giải thích trước nhé: lazy loading ngược lại với eager loading, related data chỉ được load khi nó được gọi ở lần đầu tiên (first get) sử dụng. Nghĩa là gì:</p>
+<p><img src="load-category.png" alt="loading category"></p>
+<p>Con trỏ đang ở dòng 88, và đã có 1 truy vấn được thực hiện là select tất cả các category. Ở dòng <strong>90</strong> mình gọi tới <code>Products</code>, và đây là lúc lazy loading được <strong>&quot;activate&quot;</strong>, tất cả các products thuộc category này sẽ được load lên:</p>
+<p><img src="lazy-loading.png" alt="lazy loading"></p>
+<p>Yes, 1 query <code>where CategoryId = @EntityKeyValue1</code>, với <code>@EntityKeyValue1</code> là id của category hiện tại.</p>
+<p>Giả sử có 10 categories thì sẽ có 11 lần gọi xuống db, khá tốn &#39;<strong>HP</strong>&#39; phải không :)</p>
+<p>Chú ý là với eager loading, <code>Products</code> sẽ không được load do đó dòng 90 sẽ bị <code>NullReferenceException</code>.</p>
+<p>Bạn thấy đấy, lazy loading không load data nếu không sử dụng (tốt ở chỗ này), nhưng 1 khi đã sử dụng thì nó gọi xuống số lần tương ứng với số lượng entity có trong collection (không tốt ở chỗ này).</p>
+<h3 id="khi-n-o-n-n-p-d-ng">Khi nào nên áp dụng</h3>
+<p>1 điều dễ thấy nhất là không nên dùng lazy loading cho Collection Property vì nó sẽ gọi nhiều lần. Ngược lại với Navigation Property là 1 class thông thường, sử dụng lazy loading sẽ tiết kiệm công sức cho bạn hơn.</p>
+<p>Tuy nhiên, ai biết được, mình thích thì mình gọi thôi :))</p>
+<h3 id="explicit-loading">Explicit Loading</h3>
+<p>Nó cũng chả khác gì 2 cái trên mà cách viết rườm rà, nếu muốn biết thì bạn có thể tham khảo link <a href="https://docs.microsoft.com/en-us/ef/core/querying/related-data">này</a>.</p>

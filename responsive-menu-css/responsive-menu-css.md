@@ -12,6 +12,8 @@ Ok, chủ đề của bài viết này là tạo ra menu responsive, hay còn g�
 
 <script src="https://gist.github.com/oclockvn/be3130952a0242ea708bfa23880cb5c4.js"></script>
 
+> Để hiểu về flex, bạn tham khảo tại [đây](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
 Kết quả:
 
 ![css menu](menu-step-1.gif)

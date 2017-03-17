@@ -78,8 +78,37 @@ a:hover {
   margin: 3em 0;
 }
 
-.post .post-body {
-  padding: 32px;  
+.wrapper {    
+    display: flex;
+    padding: 32px;
+}
+
+.wrapper .body--index {   
+    flex: 1;
+    margin-right: 32px;
+}
+
+.wrapper .post-title {
+    font-size: 1.2em;
+}
+
+.post-info {    
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    font-size: .9em;
+    fill: #9a9a9a;
+    color: #aaa;
+}
+
+.post-info > div {    
+    display: flex;
+    align-items: center;
+    margin-right: 8px;    
+}
+
+.post-info .icon {
+    margin-right: 2px;
 }
     </style>
 </head>
@@ -88,13 +117,27 @@ a:hover {
     <div class='container'>
         <b:section class='main' id='main' name='Main'>
           <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog'>
-              <b:includable id='iconComment'>
+            <b:includable id='iconAuthor'>
+                   <i class='icon'>
+                        <svg viewBox='0 0 24 24'>
+                            <path d='M12,19.2C9.5,19.2 7.29,17.92 6,16C6.03,14 10,12.9 12,12.9C14,12.9 17.97,14 18,16C16.71,17.92 14.5,19.2 12,19.2M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z'/>
+                        </svg>
+                    </i>
+              </b:includable>
+            <b:includable id='iconCalendar'>
+                   <i class='icon'>
+                        <svg viewBox='0 0 24 24'>
+                            <path d='M14,14H7V16H14M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M17,10H7V12H17V10Z'/>
+                        </svg>
+                    </i>
+              </b:includable>
+            <b:includable id='iconComment'>
                    <i class='icon'>
                         <svg viewBox='0 0 24 24'>
                             <path d='M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M10,16V19.08L13.08,16H20V4H4V16H10M6,7H18V9H6V7M6,11H15V13H6V11Z'/>
                         </svg>
                     </i>
-              </b:includable>
+              </b:includable>              
             <b:includable id='main' var='top'>
   
                 <!-- posts -->
@@ -574,7 +617,7 @@ a:hover {
     <meta expr:content='data:post.id' itemprop='postId'/>
 
     <a expr:name='data:post.id'/>
-    <b:if cond='data:post.title'>
+    <!--<b:if cond='data:post.title'>
       
       <b:if cond='data:post.link or (data:post.url and data:blog.url != data:post.url)'>
           <h3 class='post-title' itemprop='name'>
@@ -583,13 +626,47 @@ a:hover {
       <b:else/>
         <h1 class='post-title' itemprop='name'><data:post.title/></h1>
       </b:if>      
-    </b:if>    
-
-    <!-- Then use the post body as the schema.org description, for good G+/FB snippeting. -->
-    <div expr:class='data:blog.pageType == "item" ? "post-body body--item" : "post-body body--index"' expr:id='"post-body-" + data:post.id' expr:itemprop='(data:blog.metaDescription ? "" : "description ") + "articleBody"'>
-      <data:post.body/>   
-       <b:include cond='data:blog.pageType not in {"item","static_page"} and data:post.allowComments' data='post' name='comment_count_picker_index'/>   
-    </div>
+    </b:if>    -->
+    
+    <b:if cond='data:blog.pageType == "item"'>
+        <!-- post detail template -->
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+        <h1 class='post-title' itemprop='name'><data:post.title/></h1>
+        <div class='post-body body--item' expr:id='"post-body-" + data:post.id' expr:itemprop='(data:blog.metaDescription ? "" : "description ") + "articleBody"'>
+            <data:post.body/>
+        </div>
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <b:else/>
+        <!-- post home template -->
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+        <div class='wrapper'>            
+            <div class='body--index' expr:id='"post-body-" + data:post.id' expr:itemprop='(data:blog.metaDescription ? "" : "description ") + "articleBody"'>
+                <h3 class='post-title' itemprop='name'>
+                    <a expr:href='data:post.link ? data:post.link : data:post.url'><data:post.title/></a>
+                </h3>
+                <div class='post-info'>
+                    <div class='author'>
+                        <b:include name='iconAuthor'/>
+                        <span class='fn' itemprop='author' itemscope='itemscope' itemtype='http://schema.org/Person'>
+                            <span itemprop='name'><data:post.author/></span>
+                        </span>
+                    </div>
+                    <div class='timestamp'>
+                        <b:include name='iconCalendar'/>
+                        <b:if cond='data:post.url'>
+                            <meta expr:content='data:post.url.canonical' itemprop='url'/>
+                            <a class='timestamp-link' expr:href='data:post.url' rel='bookmark' title='permanent link'><abbr class='published' expr:title='data:post.timestampISO8601' itemprop='datePublished'><data:post.timestamp/></abbr></a>
+                        </b:if>
+                    </div>
+                </div>
+                <div class='post-body'>
+                    <data:post.snippet/>
+                </div>
+            </div>
+            <b:include cond='data:blog.pageType not in {"item","static_page"} and data:post.allowComments' data='post' name='comment_count_picker_index'/>
+        </div>
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    </b:if>
 
     <b:if cond='data:post.hasJumpLink'>
       <div class='jump-link'>
@@ -597,7 +674,7 @@ a:hover {
       </div>
     </b:if>
 
-    <b:if cond='data:blog.pageType != "item"'>
+    <b:if cond='data:blog.pageType == "item"'>
     <div class='post-footer'>
     <div class='post-footer-line post-footer-line-1'>
       <span class='post-author vcard'>
@@ -723,7 +800,34 @@ a:hover {
   </b:if>
 </b:includable>
             <b:includable id='shareButtons' var='post'>
-  <b:if cond='data:top.showEmailButton'><a class='goog-inline-block share-button sb-email' expr:href='data:post.sharePostUrl + "&amp;target=email"' expr:title='data:top.emailThisMsg' target='_blank'><span class='share-button-link-text'><data:top.emailThisMsg/></span></a></b:if><b:if cond='data:top.showBlogThisButton'><a class='goog-inline-block share-button sb-blog' expr:href='data:post.sharePostUrl + "&amp;target=blog"' expr:onclick='"window.open(this.href, \"_blank\", \"height=270,width=475\"); return false;"' expr:title='data:top.blogThisMsg' target='_blank'><span class='share-button-link-text'><data:top.blogThisMsg/></span></a></b:if><b:if cond='data:top.showTwitterButton'><a class='goog-inline-block share-button sb-twitter' expr:href='data:post.sharePostUrl + "&amp;target=twitter"' expr:title='data:top.shareToTwitterMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToTwitterMsg/></span></a></b:if><b:if cond='data:top.showFacebookButton'><a class='goog-inline-block share-button sb-facebook' expr:href='data:post.sharePostUrl + "&amp;target=facebook"' expr:onclick='"window.open(this.href, \"_blank\", \"height=430,width=640\"); return false;"' expr:title='data:top.shareToFacebookMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToFacebookMsg/></span></a></b:if><b:if cond='data:top.showPinterestButton'><a class='goog-inline-block share-button sb-pinterest' expr:href='data:post.sharePostUrl + "&amp;target=pinterest"' expr:title='data:top.shareToPinterestMsg' target='_blank'><span class='share-button-link-text'><data:top.shareToPinterestMsg/></span></a></b:if><b:if cond='data:top.showPlusOne'><div class='goog-inline-block google-plus-share-container'><data:post.googlePlusShareTag/></div></b:if>
+  <b:if cond='data:top.showEmailButton'>
+    <a class='goog-inline-block share-button sb-email' expr:href='data:post.sharePostUrl + "&amp;target=email"' expr:title='data:top.emailThisMsg' target='_blank'>
+      <span class='share-button-link-text'><data:top.emailThisMsg/></span>
+    </a>
+  </b:if>
+  <b:if cond='data:top.showBlogThisButton'>
+    <a class='goog-inline-block share-button sb-blog' expr:href='data:post.sharePostUrl + "&amp;target=blog"' expr:onclick='"window.open(this.href, \"_blank\", \"height=270,width=475\"); return false;"' expr:title='data:top.blogThisMsg' target='_blank'>
+      <span class='share-button-link-text'><data:top.blogThisMsg/></span>
+    </a>
+  </b:if>
+  <b:if cond='data:top.showTwitterButton'>
+    <a class='goog-inline-block share-button sb-twitter' expr:href='data:post.sharePostUrl + "&amp;target=twitter"' expr:title='data:top.shareToTwitterMsg' target='_blank'>
+      <span class='share-button-link-text'><data:top.shareToTwitterMsg/></span>
+    </a>
+  </b:if>
+  <b:if cond='data:top.showFacebookButton'>
+    <a class='goog-inline-block share-button sb-facebook' expr:href='data:post.sharePostUrl + "&amp;target=facebook"' expr:onclick='"window.open(this.href, \"_blank\", \"height=430,width=640\"); return false;"' expr:title='data:top.shareToFacebookMsg' target='_blank'>
+      <span class='share-button-link-text'><data:top.shareToFacebookMsg/></span>
+    </a>
+  </b:if>
+  <b:if cond='data:top.showPinterestButton'>
+    <a class='goog-inline-block share-button sb-pinterest' expr:href='data:post.sharePostUrl + "&amp;target=pinterest"' expr:title='data:top.shareToPinterestMsg' target='_blank'>
+      <span class='share-button-link-text'><data:top.shareToPinterestMsg/></span>
+    </a>
+  </b:if>
+  <b:if cond='data:top.showPlusOne'>
+    <div class='goog-inline-block google-plus-share-container'><data:post.googlePlusShareTag/></div>
+  </b:if>
 </b:includable>
             <b:includable id='status-message'>
   <b:if cond='data:navMessage'>

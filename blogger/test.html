@@ -542,6 +542,43 @@ span.label-size span.label-count {
 </head>
 
 <body>
+
+    <b:if cond='data:blog.pageType == &quot;index&quot;'>
+    <div itemscope='itemscope' itemtype='http://schema.org/Blog' style='display: none;'>
+      <meta expr:content='data:blog.title' itemprop='name'/>
+      <b:if cond='data:blog.metaDescription'>
+        <meta expr:content='data:blog.metaDescription' itemprop='description'/>
+      </b:if>
+    </div>
+  </b:if>
+
+  <b:section class='header' id='header' maxwidgets='1' name='Header' showaddelement='no'>
+        <b:widget id='Header1' locked='true' title='phantienquang-template (Header)' type='Header'>
+            <b:includable id='main'>
+              <div id='header-inner'>
+                  <div class='titlewrapper'>
+                    <h2 class='title'>
+                      <b:include name='title'/>
+                    </h2>
+                  </div>
+                  <b:include name='description'/>
+                </div>
+            </b:includable>
+          <b:includable id='description'>
+          <div class='descriptionwrapper'>
+            <p class='description'><span><data:description/></span></p>
+          </div>
+          </b:includable>
+          <b:includable id='title'>
+          <b:if cond='data:blog.url == data:blog.homepageUrl'>
+            <data:title/>
+          <b:else/>
+            <a expr:href='data:blog.homepageUrl'><data:title/></a>
+          </b:if>
+        </b:includable>
+        </b:widget>
+  </b:section>
+
     <div expr:class='data:blog.pageType == "item" ? "container container--item" : "container container--index"'>
         <b:section id='main' name='Main' class='main'>
           <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog'>

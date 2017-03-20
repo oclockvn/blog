@@ -189,8 +189,10 @@ a:hover {
 }
 
 .post--cover {
-    overflow: hidden;
-    border-bottom: 1px solid #eee;
+    overflow: hidden;    
+    max-height: 300px;
+    filter: grayscale(100%);
+    transition: .3s ease-in-out;
 }
 
 .post--cover a {
@@ -208,6 +210,14 @@ a:hover {
     border-bottom: 1px solid #eee;
     -webkit-text-fill-color: E333;
     fill: #9a9a9a;
+}
+
+.post--index:hover .post--cover {
+  filter: grayscale(0);
+}
+
+.post--cover + .post--tags {    
+    border-top: 1px solid #eee;
 }
 
 .tags a {    
@@ -228,6 +238,10 @@ a:hover {
 
 .post--index:hover {
     box-shadow: 0 5px 6px -3px rgba(0,0,0,.2), 0 9px 12px 1px rgba(0,0,0,.14), 0 3px 16px 2px rgba(0,0,0,.12);
+}
+
+.post--index:hover .post--cover {
+  filter: grayscale(0);
 }
 
 .post--item .post-title {    
@@ -365,10 +379,6 @@ a:hover {
     display: none;
 }
 
-.PopularPosts {
-   
-}
-
 .PopularPosts ul {
     list-style: none;
 }
@@ -425,7 +435,7 @@ a:hover {
     font-weight: 600;
 }
 
-span.label-size {    
+.label-size {    
     background-color: #fff;
     padding: 4px 8px;
     margin-right: 4px;
@@ -437,20 +447,19 @@ span.label-size {
     display: inline-block;
 }
 
-span.label-size a {
+.label-size a,
+.label-size .label-count {
     color: #aaa;
 }
 
-span.label-size:hover {
+.label-size:hover {
     box-shadow: 0 1px 8px 0 rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 3px 3px -2px rgba(0,0,0,.12);
+    background-color: #2196f3;
 }
 
-span.label-size:hover a {
-    color: #2196f3;
-}
-
-span.label-size span.label-count {
-    color: #aaa;
+.label-size:hover a,
+.label-size:hover .label-count {
+    color: #fff;
 }
 
 .PopularPosts h2 {
@@ -706,17 +715,22 @@ span.label-size span.label-count {
 
 .Stats {
     background: #fff;
-    padding: 32px;
+    /*padding: 32px;*/
     margin-top: 44px;
 }
 
 .Stats h2 {
-    font-size: 1em;    
+    font-size: 1em;
+    padding: 8px 16px;
+    background: #2196f3;
+    color: #fff;
+    font-weight: 600;    
 }
 
 .stats-content {
     display: flex;
     align-items: center;
+    padding: 16px;
 }
 
 .stats-content img {

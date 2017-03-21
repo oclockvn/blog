@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b'
+    xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+
+<head>
+    <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport' />
+    <b:include data='blog' name='all-head-content' />
+    <title>
+        <data:blog.pageTitle/>
+    </title>
+    <b:skin>
+        <![CDATA[]]>
+    </b:skin>
+    <b:include data='blog' name='google-analytics' />
+</head>
+
+<body>
+    <!-- section with 1 maximum widget: maxwidgets='1' -->
+    <b:section class='header' id='header' maxwidgets='1' name='Header'>
+        <b:widget id='Header1' type='Header' />
+    </b:section>
+
+    <!-- section with unlimited widgets -->
+    <b:section class='main' id='main' name='Main'>
+        <b:widget id='Blog1' type='Blog' />
+        <b:widget id='Label1' type='Label' />
+    </b:section>
+</body>
+
+</html>

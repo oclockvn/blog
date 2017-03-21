@@ -838,6 +838,71 @@ body {
   padding: 16px;
 }
 
+@media screen and (max-width: 769px) {
+  .container {    
+    padding: 0 16px;
+  }
+  
+  .container, .post-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-inner {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .wrapper, .footer .love-forever {
+    flex-direction: column;
+  }
+  
+  .container .sidebar {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .post-info .author {
+    margin-bottom: 4px;
+  }
+  
+  .container .main, .post--index {
+    max-width: 100%;    
+  }
+  
+  .wrapper > .comment-link {
+    margin-top: 16px;
+  }
+  
+  .sidebar {
+    margin: 0;
+  }
+  
+  .quicknav {
+    display: none;
+  }
+  
+  .blog-pager {    
+    right: -32px;
+  }
+  
+  .blog-pager:hover {
+    right: 32px;
+  }
+  
+  .post--item .post-body {
+    padding: 16px;
+  }
+  
+  .Profile .widget-content {
+    padding: 32px 16px;
+  }
+  
+  .Profile .profile-intro {
+    padding: 0;
+  }
+}
+
 @-webkit-keyframes heartbeat {
   0%,
   28%,

@@ -12,6 +12,7 @@
     &lt;!-- /*
     <b:skin><![CDATA[*/]]></b:skin>
     <style type='text/css'/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=vietnamese" rel="stylesheet"/>
     <style type='text/css'>
     * {
   margin: 0;
@@ -21,7 +22,7 @@
 
 html, body {
   font-size: 14px;
-  font-family: 'Segoe UI';
+  font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
   font-weight: 400;
   background-color: #f2f2f2;
 }
@@ -640,7 +641,7 @@ a:hover {
   padding: 64px 0
 }
 
-.footer-info>a {
+.footer-info > a {
   display: block;
   padding: 12px;
   border-radius: 50%;
@@ -901,6 +902,12 @@ body {
   .Profile .profile-intro {
     padding: 0;
   }
+}
+
+.status-msg-body {  
+    background: #fff;
+    padding: 16px;    
+    border-bottom: 3px solid #2196f3;    
 }
 
 @-webkit-keyframes heartbeat {
@@ -1384,7 +1391,7 @@ body {
                       </div>
                     </div>
 
-                    <div style='clear: both;'/>
+                    <!--<div style='clear: both;'/>-->
                   </a>
 
                   <div class='mobile-index-comment'>
@@ -1435,7 +1442,7 @@ body {
                 </div>
 
               </div>
-              <div class='clear'/>
+              <!--<div class='clear'/>-->
             </b:includable>
             <b:includable id='mobile-post' var='post'>
               <div class='date-outer'>
@@ -1471,7 +1478,7 @@ body {
 
                       <div class='post-body entry-content' expr:id='"post-body-" + data:post.id' itemprop='articleBody'>
                         <data:post.body/>
-                        <div style='clear: both;'/> <!-- clear for photos floats -->
+                        <!--<div style='clear: both;'/>-->
                       </div>
 
                       <div class='post-footer'>
@@ -1740,13 +1747,13 @@ body {
                 <div class='status-msg-body'>
                   <data:navMessage/>
                 </div>
-                <div class='status-msg-border'>
+                <!--<div class='status-msg-border'>
                   <div class='status-msg-bg'>
                     <div class='status-msg-hidden'><data:navMessage/></div>
                   </div>
-                </div>
+                </div>-->
               </div>
-              <div style='clear: both;'/>
+              <!--<div style='clear: both;'/>-->
               </b:if>
             </b:includable>
             <b:includable id='threaded-comment-form' var='post'>

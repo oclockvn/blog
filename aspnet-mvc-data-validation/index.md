@@ -55,3 +55,42 @@ Tiếp, ví dụ như validate số lượng ký tự nhập vào với `[String
 Đơn giản mà, rất là gợi nhớ và đầy đủ ngữ nghĩa nên bạn không khó để sử dụng.
 
 Tham khảo tại [đây](https://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations(v=vs.110).aspx) để xem các attribute hỗ trợ nhé.
+
+Thêm 1 chút về cách viết annotation, bạn có thể viết tách ra như thế này:
+
+<script src="https://gist.github.com/oclockvn/a98a4e12132d77f25fefb690482ca1a7.js"></script>
+
+hoặc gộp lại thành 1 như thế này:
+
+<script src="https://gist.github.com/oclockvn/82f5b6d474f4ec7542b66bb3a00195a9.js"></script>
+
+bạn có thể viết cách nào mà bạn thấy thích nhất. (Mình thích cách tách ra, dễ nhìn và chỉnh sửa hơn)
+
+### Sử dụng validate attribute
+
+Quay trở lại với html 1 chút, nếu bạn chưa biết thì:
+
+`@Html.TextBoxFor(m => m.Name, new { @class="form-control"})`
+
+là 1 [Html helper](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/views/creating-custom-html-helpers-cs), trong asp.net mvc (razor syntax) nó được sử dụng để sinh ra html.
+
+Ví dụ như với helper ở trên, kết quả sinh ra sẽ là:
+
+![html-helper-generated](html-helper-generated.png)
+
+yes, cũng chỉ là 1 input bình thường, nhưng nó có gắn thêm `name=Name` (Name là tên của property, asp.net mvc model binder sẽ bind dựa vào name). Đây là 1 trong những lợi thế khi sử dụng html helper thay cho html tag bình thường.
+
+À, nếu bạn chưa biết thì sự khác nhau giữa `@Html.TextBox()` và `@Html.TextBoxFor()` đó là `TextBoxFor` sinh ra html có gắn với 1 property cụ thể được binding vào Action (bạn viết ra là sẽ hiểu).
+
+Không những thế, khi sử dụng kết hợp với data annotation, html sinh ra sẽ có thêm nhiều attributes khác nữa. Với những attribute mình đã thêm ở trên thì kết quả sẽ là:
+
+![validation-rules](validation-rules.png)
+
+Nó là các html attributes có dạng data-* (data-* là custom attribute được sử dụng trong html5). Tới đây thì bạn vẫn chưa sử dụng được các validation rules này, bạn phải thêm vào 1 helper nữa để validate, đó là:
+
+`@Html.ValidationMessageFor(m => m.Name)`
+
+Thêm helper cho các property khác:
+
+<script src="https://gist.github.com/oclockvn/72d735c0b69763a120dd06500b214927.js"></script>
+

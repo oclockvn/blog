@@ -80,7 +80,7 @@ Ví dụ như với helper ở trên, kết quả sinh ra sẽ là:
 
 yes, cũng chỉ là 1 input bình thường, nhưng nó có gắn thêm `name=Name` (Name là tên của property, asp.net mvc model binder sẽ bind dựa vào name). Đây là 1 trong những lợi thế khi sử dụng html helper thay cho html tag bình thường.
 
-À, nếu bạn chưa biết thì sự khác nhau giữa `@Html.TextBox()` và `@Html.TextBoxFor()` đó là `TextBoxFor` sinh ra html có gắn với 1 property cụ thể được binding vào Action (bạn viết ra là sẽ hiểu).
+À, nếu bạn chưa biết thì sự khác nhau giữa `@Html.TextBox()` và `@Html.TextBoxFor()` đó là `TextBoxFor` sinh ra html có gắn với 1 property cụ thể được binding vào Action (bạn viết ra là sẽ hiểu). For = For something, ví dụ textbox cho cái Id, textbox cho cái Name...
 
 Không những thế, khi sử dụng kết hợp với data annotation, html sinh ra sẽ có thêm nhiều attributes khác nữa. Với những attribute mình đã thêm ở trên thì kết quả sẽ là:
 
@@ -88,9 +88,35 @@ Không những thế, khi sử dụng kết hợp với data annotation, html si
 
 Nó là các html attributes có dạng data-* (data-* là custom attribute được sử dụng trong html5). Tới đây thì bạn vẫn chưa sử dụng được các validation rules này, bạn phải thêm vào 1 helper nữa để validate, đó là:
 
+### 2. Validation message
+
 `@Html.ValidationMessageFor(m => m.Name)`
 
 Thêm helper cho các property khác:
 
 <script src="https://gist.github.com/oclockvn/72d735c0b69763a120dd06500b214927.js"></script>
 
+### 3. Action
+
+Bước cuối cùng, trong action bạn kiểm tra model có hợp lệ hay không bằng `ModelState`
+
+<script src="https://gist.github.com/oclockvn/d89e9c67a78a5a83862bb6b1c80c13c7.js"></script>
+
+Bạn có thể select danh sách lỗi bằng 1 câu linq đơn giản:
+
+<script src="https://gist.github.com/oclockvn/c91c82be7cf13c50d0020d518e4ce32b.js"></script>
+
+Hoặc hiển thị tất cả các lỗi ra giao diện bằng cách thêm helper:
+
+<script src="https://gist.github.com/oclockvn/276e90667be5df27f522a500f55273b8.js"></script>
+
+Kết quả:
+
+![error-messages](error-messages.png)
+
+Việc hiển thị trên hay dưới, đỏ hay đen, ngang hay dọc thì bạn hoàn toàn có thể quyết định được bằng cách thay đổi html và css cho form nhé.
+
+Ok, validate bằng data annotation cơ bản là thế, 1 số chú ý khác khi sử dụng là:
+
+- Nếu muốn sử dụng cho đa ngôn ngữ, bạn có thể tham khảo tại [đây](http://20fingers2brains.blogspot.com/2013/10/multi-language-error-messages-using.html).
+- Nếu các build-in attribute chưa đủ làm bạn thỏa mãn, bạn có thể viết custom attribute, đơn giản thôi, xem tại [đây](http://www.c-sharpcorner.com/article/custom-data-annotation-validation-in-mvc/)

@@ -119,4 +119,40 @@ Việc hiển thị trên hay dưới, đỏ hay đen, ngang hay dọc thì bạ
 Ok, validate bằng data annotation cơ bản là thế, 1 số chú ý khác khi sử dụng là:
 
 - Nếu muốn sử dụng cho đa ngôn ngữ, bạn có thể tham khảo tại [đây](http://20fingers2brains.blogspot.com/2013/10/multi-language-error-messages-using.html).
-- Nếu các build-in attribute chưa đủ làm bạn thỏa mãn, bạn có thể viết custom attribute, đơn giản thôi, xem tại [đây](http://www.c-sharpcorner.com/article/custom-data-annotation-validation-in-mvc/)
+- Nếu các build-in attribute chưa đủ làm bạn thỏa mãn, bạn có thể viết custom attribute, đơn giản thôi, xem tại [đây](http://www.c-sharpcorner.com/article/custom-data-annotation-validation-in-mvc/).
+
+### Bootstrap validator (bs)
+
+Link download ở phía trên nhé.
+
+Thư viện bs được sử dụng đi kèm với bootstrap, do đó, hiển nhiên là bạn phải dùng bootstrap chứ không phải framework khác nhé.
+
+Đầu tiên, thêm bs vào _Layout.cshtml
+
+![insert-bootstrap-validator](insert-bootstrap-validator.png)
+
+Setup:
+
+1 setup cơ bản như sau:
+
+<script src="https://gist.github.com/oclockvn/6614d260195c5539f5e651f6533d0929.js"></script>
+
+Trong đó `icons` là các icons hiển thị tương ứng với trạng thái của control (hợp lệ/không hợp lệ..), và `fields` là các option tương ứng cho mỗi control (lấy theo tên).
+
+Ví dụ:
+
+`<input type="text" name="MyName" />`
+
+thì option tương ứng sẽ là:
+
+`fields: { MyName: {} }`
+
+dễ hiểu phải không :).
+
+Tiếp theo, để setup các rules cho 1 control, sử dụng `validators`:
+
+<script src="https://gist.github.com/oclockvn/891bb92cb0521f3fc5fa1dd77cdd3fae.js"></script>
+
+Với rules như vậy, ví dụ bạn submit mà không nhập Name, thì rules **notEmpty** sẽ bị violate, và **message** Name is required sẽ hiển thị.
+
+Bạn có thể download source code của bs về và xem các ví dụ demo để biết thêm các validators được sử dụng trong bs.

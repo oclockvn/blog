@@ -2,15 +2,15 @@ Data Validation (Input data validate: duyệt/kiểm tra dữ liệu đầu vào
 
 Validate data nên thực hiện ở cả 2 tầng là front-end và back-end, như vậy thì (giả sử) người dùng có hack/cheat để vượt quá tầng front-end (ví dụ disable javascript), thì vẫn còn 1 chốt chặn ở server nữa.
 
-Trong bài này, mình sẽ giới thiệu một số cách sử dụng validation trong asp.net mvc, sử dụng data annotation và 1 thư viện validate rất cool do 1 dev của Việt Nam tạo ra, đó là bootstrap validator.
+Trong bài này, mình sẽ giới thiệu một số cách sử dụng validation cơ-bản-nhất trong asp.net mvc, sử dụng data annotation và 1 thư viện validate rất cool do 1 dev của Việt Nam tạo ra, đó là bootstrap validator.
 
-> [bootstrap validator](https://github.com/nghuuphuoc/bootstrapvalidator) (bs) là tiền thân của [formvalidation](http://formvalidation.io/). Sự khác nhau là bs là 1 phiên bản miễn phí, chỉ sự dụng cho bootstrap. Phiên bản mới nhất hỗ trợ được nhiều css framework khác và tính phí. Trong bài này mình chỉ nói tới bootstrap validator.
+> [bootstrap validator](https://github.com/nghuuphuoc/bootstrapvalidator) (bv) là tiền thân của [formvalidation](http://formvalidation.io/). Sự khác nhau là bv là 1 phiên bản miễn phí, chỉ sự dụng cho bootstrap. Phiên bản mới nhất hỗ trợ được nhiều css framework khác và tính phí. Trong bài này mình chỉ nói tới bootstrap validator.
 
 ### UI
 
 Xây dựng 1 layout đơn giản như sau:
 
-![form-validate](form-validate.png)
+![form-validate](ui-form-validate.png)
 
 html
 
@@ -80,17 +80,19 @@ Ví dụ như với helper ở trên, kết quả sinh ra sẽ là:
 
 yes, cũng chỉ là 1 input bình thường, nhưng nó có gắn thêm `name=Name` (Name là tên của property, asp.net mvc model binder sẽ bind dựa vào name). Đây là 1 trong những lợi thế khi sử dụng html helper thay cho html tag bình thường.
 
-À, nếu bạn chưa biết thì sự khác nhau giữa `@Html.TextBox()` và `@Html.TextBoxFor()` đó là `TextBoxFor` sinh ra html có gắn với 1 property cụ thể được binding vào Action (bạn viết ra là sẽ hiểu). For = For something, ví dụ textbox cho cái Id, textbox cho cái Name...
+À, nếu bạn chưa biết thì sự khác nhau giữa `@Html.TextBox()` và `@Html.TextBoxFor()` đó là `TextBoxFor` sinh ra html có gắn với 1 property cụ thể (nào đó) và được auto-binding vào Action (bạn viết ra là sẽ hiểu). For = For something, ví dụ textbox cho cái Id, textbox cho cái Name...
 
 Không những thế, khi sử dụng kết hợp với data annotation, html sinh ra sẽ có thêm nhiều attributes khác nữa. Với những attribute mình đã thêm ở trên thì kết quả sẽ là:
 
 ![validation-rules](validation-rules.png)
 
-Nó là các html attributes có dạng data-* (data-* là custom attribute được sử dụng trong html5). Tới đây thì bạn vẫn chưa sử dụng được các validation rules này, bạn phải thêm vào 1 helper nữa để validate, đó là:
+Nó là các html attributes có dạng data-* (data-* là custom attribute được sử dụng trong html5). Tới đây thì bạn vẫn chưa sử dụng được các validation rules này (thực ra là bạn có thể sử dụng, chỉ là bạn không thấy hiển thị nếu bị lỗi thôi), bạn phải thêm vào 1 helper nữa để validate, đó là:
 
 ### 2. Validation message
 
 `@Html.ValidationMessageFor(m => m.Name)`
+
+Tương tự như `@Html.TextBoxFor`, cái này sẽ sinh ra html để thông báo lỗi cho 1 property nếu như property đó phạm lỗi.
 
 Thêm helper cho các property khác:
 
@@ -121,13 +123,13 @@ Ok, validate bằng data annotation cơ bản là thế, 1 số chú ý khác kh
 - Nếu muốn sử dụng cho đa ngôn ngữ, bạn có thể tham khảo tại [đây](http://20fingers2brains.blogspot.com/2013/10/multi-language-error-messages-using.html).
 - Nếu các build-in attribute chưa đủ làm bạn thỏa mãn, bạn có thể viết custom attribute, đơn giản thôi, xem tại [đây](http://www.c-sharpcorner.com/article/custom-data-annotation-validation-in-mvc/).
 
-### Bootstrap validator (bs)
+### Bootstrap validator (bv)
 
 Link download ở phía trên nhé.
 
-Thư viện bs được sử dụng đi kèm với bootstrap, do đó, hiển nhiên là bạn phải dùng bootstrap chứ không phải framework khác nhé.
+Thư viện bv được sử dụng đi kèm với bootstrap, do đó, hiển nhiên là bạn phải dùng bootstrap chứ không phải framework khác nhé.
 
-Đầu tiên, thêm bs vào _Layout.cshtml
+Đầu tiên, thêm bv vào _Layout.cshtml
 
 ![insert-bootstrap-validator](insert-bootstrap-validator.png)
 
@@ -155,4 +157,42 @@ Tiếp theo, để setup các rules cho 1 control, sử dụng `validators`:
 
 Với rules như vậy, ví dụ bạn submit mà không nhập Name, thì rules **notEmpty** sẽ bị violate, và **message** Name is required sẽ hiển thị.
 
-Bạn có thể download source code của bs về và xem các ví dụ demo để biết thêm các validators được sử dụng trong bs.
+Bạn có thể download source code của bv về và xem các ví dụ demo để biết thêm các validators được sử dụng trong bv.
+
+Kết quả:
+
+![bv-result.gif](bv-result.gif)
+
+### Dành cho người lười
+
+Chắc chắn là cái website của bạn không chỉ có 1 form rồi, và mỗi lần setup bv cũng..khá tốn thời gian phải không. Vậy thì hãy thêm tí mắm muối để đỡ vất vả hơn nhé.
+
+Phân tích html 1 chút sẽ thấy ngay, mọi html sinh ra bởi html helper của thuộc tính có sử dụng validate đều có 1 điểm chung:
+
+![input-data-val.png](input-data-val.png)
+
+yes, và các rule cũng được thêm theo quy tắc: **data-val-[rule]**, ví dụ như:
+
+`<input type="text" data-val="true" data-val-required="Product name is required" />`
+
+Vậy thì mình sẽ build 1 đoạn script nhỏ để lấy tất cả các data-val-* attribute trong form, và từ đó build nên các validate rules:
+
+<script src="https://gist.github.com/oclockvn/0e4dbc6eacc2f3f87d83d5323842c9ed.js"></script>
+
+với script build rule như sau:
+
+<script src="https://gist.github.com/oclockvn/ed06108df973d84e8e582b516db6d78f.js"></script>
+
+2 đoạn js trên khá đơn giản (với những người biết js, nếu bạn chưa rành thì cứ tiếp tục xem cho rành nhé :v) nên mình không giải thích (giải thích dài dòng). Trên đây mình chỉ build cho các rules **thường gặp** nhất, nếu bạn muốn add thêm rule, cứ việc xem html generated ra và thêm vào thôi.
+
+Vậy công việc của bạn bây giờ đơn giản hơn rất nhiều, gọi hàm `formValidationBuilder()`:
+
+![form-validator-builder](form-validator-builder.png)
+
+and..done! Đơn giản phải không :))
+
+### Kết
+
+Bootstrap validator rất dễ sử dụng và hiệu quả, tuy nhiên điểm yếu của nó là phụ thuộc vào bootstrap (có lẽ vì vậy mà tác giả mới nâng lên form validation). Nhưng không sao, đa số các back-end site vẫn hay dùng bootstrap mà :))
+
+Ok, kết ngắn gọn: vào [đây](https://github.com/oclockvn/data-validation-aspnet-mvc) mà tải source code để nghiên cứu thêm nhé :)

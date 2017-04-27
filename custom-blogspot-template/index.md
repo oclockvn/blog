@@ -83,7 +83,11 @@ Ok, đến lúc giải thích 1 số thứ rồi:
 
 Giờ chỉ việc hiểu các rule hiển thị và custom nó mà thôi, đơn giản nhỉ :))
 
-### Rule 1: Widget chỉ nằm trong Section.
+### Rule 1: Luôn luôn backup những gì bạn đã làm
+
+bằng cách sử dụng git (nếu bạn là 1 dev), với những người không phải developer thì bạn có thể lưu file template cũ riêng ra, sau khi sửa thì tiếp tục lưu riêng ra. Chắc chắn sẽ có lúc bạn "vô tình" sửa 1 cái gì đó làm cho cái template loạn lên, đó là lúc bản backup phát huy tác dụng.
+
+### Rule 2: Widget chỉ nằm trong Section.
 
 Giả sử bạn viết 10 bài viết (post), thì widget "Blog" `<b:widget type='Blog'>` là cái sẽ hiển thị 10 post đó ra.
 
@@ -95,18 +99,26 @@ Và tất cả các widget đó phải được đặt trong thẻ section, bạ
 
 Sẽ có chỗ để bạn thêm các widget, mình sẽ nói tới nó sau.
 
-### Rule 2: Tái sử dụng với includable và include.
+### Rule 3: Tái sử dụng với includable và include.
 
 Hãy liên tưởng tới hàm (method/function). Khi khai báo `<b:includable id='main'>` tức là bạn khai báo 1 function, và khi bạn muốn sử dụng hàm "main" trên, bạn chỉ việc `<b:include name='main'/>`.
 
 Cụ thể, Xét 1 view trên blog của mình:
 
-![widget comment](widget-comment.png)
+![widget comment](widget-title.png)
 
-Sẽ có nhiều chỗ bạn cần sử dụng cái hiển thị số comment này, khi đó nếu bạn sử dụng includable thì nó sẽ đại loại như sau (diễn tả thôi nhóe):
+Sẽ có nhiều chỗ bạn cần sử dụng cái hiển thị cái title này, khi đó nếu bạn sử dụng includable thì nó sẽ đại loại như sau (diễn tả thôi nhóe):
 
 <script src="https://gist.github.com/oclockvn/bab04f3d34d0d10c22bb4cc6a848e95c.js"></script>
 
 Như vậy, bạn có thể include nhiều cái "postTitle" trong post, và nó sẽ hiển thị ra hoàn toàn như nhau.
+
+![include-anywhere](include-anywhere.png)
+
+Chính vì khả năng tái sử dụng mà trong template bạn sẽ thấy rất nhiều chỗ sử dụng includable và include:
+
+![includable-in-template](includable-in-template.png)
+
+Ok, chỉ có 3 rules vậy thôi.
 
 Xem thêm tại [đây](https://support.google.com/blogger/answer/46995) để biết các widget tags khác, mình sẽ giải thích thêm trong khi sử dụng.

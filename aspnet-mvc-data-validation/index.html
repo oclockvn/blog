@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        
+    
+
+<p>Data Validation (Input data validate: duyệt/kiểm tra dữ liệu đầu vào) có ý nghĩa quan trọng trong các ứng dụng. Việc validate data không chỉ giúp người dùng có 1 tiêu chuẩn nhập liệu 1 cách tốt hơn, mà còn giúp developer <strong>giảm thiểu được lỗi</strong> trong quá trình xử lý.</p>
+<p>Validate data nên thực hiện ở cả 2 tầng là front-end và back-end, như vậy thì (giả sử) người dùng có hack/cheat để vượt quá tầng front-end (ví dụ disable javascript), thì vẫn còn 1 chốt chặn ở server nữa.</p>
+<p>Trong bài này, mình sẽ giới thiệu một số cách sử dụng validation cơ-bản-nhất trong asp.net mvc, sử dụng data annotation và 1 thư viện validate rất cool do 1 dev của Việt Nam tạo ra, đó là bootstrap validator.</p>
+<blockquote>
+<p><a href="https://github.com/nghuuphuoc/bootstrapvalidator">bootstrap validator</a> (bv) là tiền thân của <a href="http://formvalidation.io/">formvalidation</a>. Sự khác nhau là bv là 1 phiên bản miễn phí, chỉ sự dụng cho bootstrap. Phiên bản mới nhất hỗ trợ được nhiều css framework khác và tính phí. Trong bài này mình chỉ nói tới bootstrap validator.</p>
+</blockquote>
+<h3 id="ui">UI</h3>
+<p>Xây dựng 1 layout đơn giản như sau:</p>
+<p><img src="ui-form-validate.png" alt="form-validate"></p>
+<p>html</p>
+<script src="https://gist.github.com/oclockvn/2e1bd5d01b7bd05287c933f49f65c2a9.js"></script>
+
+<h3 id="model">Model</h3>
+<script src="https://gist.github.com/oclockvn/f8ee6fd54bf177c1c8c5b0b41f1f770f.js"></script>
+
+<p>Tạm thời model sẽ đơn giản thế này thôi.</p>
+<h3 id="1-data-annotation">1. Data Annotation</h3>
+<p>Hãy cùng xem và phân tích nhé:</p>
+<script src="https://gist.github.com/oclockvn/78344a954ea87b454286f204509e38d0.js"></script>
+
+<p>Đầu tiên là namespace để sử dụng được các attributes:</p>
+<p><code>using System.ComponentModel.DataAnnotations;</code></p>
+<p>Với mỗi attribute sẽ có các thuộc tính (property) để validate. Ví dụ đối với <code>RequiredAttribute</code> của <strong>Name</strong> property:</p>
+<p><code>[Required(ErrorMessage = &quot;{0} is required&quot;)]</code></p>
+<p>Tham số thứ 0 luôn luôn là tên của property, ở đây là <strong>Name</strong>. Nếu bạn muốn custom name khi hiển thị, bạn sử dụng kèm với <code>DisplayAttribute</code> bằng cách <code>[Display(Name = &quot;my custom name&quot;)]</code>.</p>
+<p>Quay lại với <code>RequiredAttribute</code> ở trên, khi bạn submit mà chưa nhập tên, kết quả sinh ra sẽ là:</p>
+<p><code>Product name is required</code></p>
+<p>Dễ hiểu phải không! :))</p>
+<p>Tiếp, ví dụ như validate số lượng ký tự nhập vào với <code>[StringLength]</code></p>
+<p><code>[StringLength(250, MinimumLength = 2, ErrorMessage = &quot;{0} must be from {2} to {1} characters&quot;)]</code></p>
+<ul>
+<li>250: MaximumLength (default parameter) là 250 ký tự</li>
+<li>MinimumLength = 2: tối thiểu 2 ký tự</li>
+<li>ErrorMessage: lỗi khi nhập 1 ký tự hoặc vượt quá 250 ký tự. Nhìn vào đây sẽ hiểu được cách sử dụng parameters, <strong>{0}</strong> luôn là tên của property, <strong>{2}</strong> là tham số thứ 2 (min length), <strong>{1}</strong> là tham số đầu tiên.</li>
+</ul>
+<p>Đơn giản mà, rất là gợi nhớ và đầy đủ ngữ nghĩa nên bạn không khó để sử dụng.</p>
+<p>Tham khảo tại <a href="https://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations(v=vs.110">đây</a>.aspx) để xem các attribute hỗ trợ nhé.</p>
+<p>Thêm 1 chút về cách viết annotation, bạn có thể viết tách ra như thế này:</p>
+<script src="https://gist.github.com/oclockvn/a98a4e12132d77f25fefb690482ca1a7.js"></script>
+
+<p>hoặc gộp lại thành 1 như thế này:</p>
+<script src="https://gist.github.com/oclockvn/82f5b6d474f4ec7542b66bb3a00195a9.js"></script>
+
+<p>bạn có thể viết cách nào mà bạn thấy thích nhất. (Mình thích cách tách ra, dễ nhìn và chỉnh sửa hơn)</p>
+<h3 id="s-d-ng-validate-attribute">Sử dụng validate attribute</h3>
+<p>Quay trở lại với html 1 chút, nếu bạn chưa biết thì:</p>
+<p><code>@Html.TextBoxFor(m =&gt; m.Name, new { @class=&quot;form-control&quot;})</code></p>
+<p>là 1 <a href="https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/views/creating-custom-html-helpers-cs">Html helper</a>, trong asp.net mvc (razor syntax) nó được sử dụng để sinh ra html.</p>
+<p>Ví dụ như với helper ở trên, kết quả sinh ra sẽ là:</p>
+<p><img src="html-helper-generated.png" alt="html-helper-generated"></p>
+<p>yes, cũng chỉ là 1 input bình thường, nhưng nó có gắn thêm <code>name=Name</code> (Name là tên của property, asp.net mvc model binder sẽ bind dựa vào name). Đây là 1 trong những lợi thế khi sử dụng html helper thay cho html tag bình thường.</p>
+<p>À, nếu bạn chưa biết thì sự khác nhau giữa <code>@Html.TextBox()</code> và <code>@Html.TextBoxFor()</code> đó là <code>TextBoxFor</code> sinh ra html có gắn với 1 property cụ thể (nào đó) và được auto-binding vào Action (bạn viết ra là sẽ hiểu). For = For something, ví dụ textbox cho cái Id, textbox cho cái Name...</p>
+<p>Không những thế, khi sử dụng kết hợp với data annotation, html sinh ra sẽ có thêm nhiều attributes khác nữa. Với những attribute mình đã thêm ở trên thì kết quả sẽ là:</p>
+<p><img src="validation-rules.png" alt="validation-rules"></p>
+<p>Nó là các html attributes có dạng data-<em> (data-</em> là custom attribute được sử dụng trong html5). Tới đây thì bạn vẫn chưa sử dụng được các validation rules này (thực ra là bạn có thể sử dụng, chỉ là bạn không thấy hiển thị nếu bị lỗi thôi), bạn phải thêm vào 1 helper nữa để validate, đó là:</p>
+<h3 id="2-validation-message">2. Validation message</h3>
+<p><code>@Html.ValidationMessageFor(m =&gt; m.Name)</code></p>
+<p>Tương tự như <code>@Html.TextBoxFor</code>, cái này sẽ sinh ra html để thông báo lỗi cho 1 property nếu như property đó phạm lỗi.</p>
+<p>Thêm helper cho các property khác:</p>
+<script src="https://gist.github.com/oclockvn/72d735c0b69763a120dd06500b214927.js"></script>
+
+<h3 id="3-action">3. Action</h3>
+<p>Bước cuối cùng, trong action bạn kiểm tra model có hợp lệ hay không bằng <code>ModelState</code></p>
+<script src="https://gist.github.com/oclockvn/d89e9c67a78a5a83862bb6b1c80c13c7.js"></script>
+
+<p>Bạn có thể select danh sách lỗi bằng 1 câu linq đơn giản:</p>
+<script src="https://gist.github.com/oclockvn/c91c82be7cf13c50d0020d518e4ce32b.js"></script>
+
+<p>Hoặc hiển thị tất cả các lỗi ra giao diện bằng cách thêm helper:</p>
+<script src="https://gist.github.com/oclockvn/276e90667be5df27f522a500f55273b8.js"></script>
+
+<p>Kết quả:</p>
+<p><img src="error-messages.png" alt="error-messages"></p>
+<p>Việc hiển thị trên hay dưới, đỏ hay đen, ngang hay dọc thì bạn hoàn toàn có thể quyết định được bằng cách thay đổi html và css cho form nhé.</p>
+<p>Ok, validate bằng data annotation cơ bản là thế, 1 số chú ý khác khi sử dụng là:</p>
+<ul>
+<li>Nếu muốn sử dụng cho đa ngôn ngữ, bạn có thể tham khảo tại <a href="http://20fingers2brains.blogspot.com/2013/10/multi-language-error-messages-using.html">đây</a>.</li>
+<li>Nếu các build-in attribute chưa đủ làm bạn thỏa mãn, bạn có thể viết custom attribute, đơn giản thôi, xem tại <a href="http://www.c-sharpcorner.com/article/custom-data-annotation-validation-in-mvc/">đây</a>.</li>
+</ul>
+<h3 id="bootstrap-validator-bs-">Bootstrap validator (bv)</h3>
+<p>Link download ở phía trên nhé.</p>
+<p>Thư viện bv được sử dụng đi kèm với bootstrap, do đó, hiển nhiên là bạn phải dùng bootstrap chứ không phải framework khác nhé.</p>
+<p>Đầu tiên, thêm bv vào _Layout.cshtml</p>
+<p><img src="insert-bootstrap-validator.png" alt="insert-bootstrap-validator"></p>
+<p>Setup:</p>
+<p>1 setup cơ bản như sau:</p>
+<script src="https://gist.github.com/oclockvn/6614d260195c5539f5e651f6533d0929.js"></script>
+
+<p>Trong đó <code>icons</code> là các icons hiển thị tương ứng với trạng thái của control (hợp lệ/không hợp lệ..), và <code>fields</code> là các option tương ứng cho mỗi control (lấy theo tên).</p>
+<p>Ví dụ:</p>
+<p><code>&lt;input type=&quot;text&quot; name=&quot;MyName&quot; /&gt;</code></p>
+<p>thì option tương ứng sẽ là:</p>
+<p><code>fields: { MyName: {} }</code></p>
+<p>dễ hiểu phải không :).</p>
+<p>Tiếp theo, để setup các rules cho 1 control, sử dụng <code>validators</code>:</p>
+<script src="https://gist.github.com/oclockvn/891bb92cb0521f3fc5fa1dd77cdd3fae.js"></script>
+
+<p>Với rules như vậy, ví dụ bạn submit mà không nhập Name, thì rules <strong>notEmpty</strong> sẽ bị violate, và <strong>message</strong> Name is required sẽ hiển thị.</p>
+<p>Bạn có thể download source code của bv về và xem các ví dụ demo để biết thêm các validators được sử dụng trong bv.</p>
+<p>Kết quả:</p>
+<p><img src="bv-result.gif" alt="bv-result"></p>
+
+<h3 id="d-nh-cho-ng-i-l-i">Dành cho người lười</h3>
+<p>Chắc chắn là cái website của bạn không chỉ có 1 form rồi, và mỗi lần setup bv cũng..khá tốn thời gian phải không. Vậy thì hãy thêm tí mắm muối để đỡ vất vả hơn nhé.</p>
+<p>Phân tích html 1 chút sẽ thấy ngay, mọi html sinh ra bởi html helper của thuộc tính có sử dụng validate đều có 1 điểm chung:</p>
+<p><img src="input-data-val.png" alt="input-data-val.png"></p>
+<p>yes, và các rule cũng được thêm theo quy tắc: <strong>data-val-[rule]</strong>, ví dụ như:</p>
+<p><code>&lt;input type=&quot;text&quot; data-val=&quot;true&quot; data-val-required=&quot;Product name is required&quot; /&gt;</code></p>
+<p>Vậy thì mình sẽ build 1 đoạn script nhỏ để lấy tất cả các data-val-* attribute trong form, và từ đó build nên các validate rules:</p>
+<script src="https://gist.github.com/oclockvn/0e4dbc6eacc2f3f87d83d5323842c9ed.js"></script>
+
+<p>với script build rule như sau:</p>
+<script src="https://gist.github.com/oclockvn/ed06108df973d84e8e582b516db6d78f.js"></script>
+
+<p>2 đoạn js trên khá đơn giản (với những người biết js, nếu bạn chưa rành thì cứ tiếp tục xem cho rành nhé :v) nên mình không giải thích (giải thích dài dòng). Trên đây mình chỉ build cho các rules <strong>thường gặp</strong> nhất, nếu bạn muốn add thêm rule, cứ việc xem html generated ra và thêm vào thôi.</p>
+<p>Vậy công việc của bạn bây giờ đơn giản hơn rất nhiều, gọi hàm <code>formValidationBuilder()</code>:</p>
+<p><img src="form-validator-builder.png" alt="form-validator-builder"></p>
+<p>and..done! Đơn giản phải không :))</p>
+<h3 id="k-t">Kết</h3>
+<p>Bootstrap validator rất dễ sử dụng và hiệu quả, tuy nhiên điểm yếu của nó là phụ thuộc vào bootstrap (có lẽ vì vậy mà tác giả mới nâng lên form validation). Nhưng không sao, đa số các back-end site vẫn hay dùng bootstrap mà :))</p>
+<p>Ok, kết ngắn gọn: vào <a href="https://github.com/oclockvn/data-validation-aspnet-mvc">đây</a> mà tải source code để nghiên cứu thêm nhé :)</p>
+</body>
+</html>
